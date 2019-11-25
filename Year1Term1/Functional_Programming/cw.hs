@@ -1,2 +1,3 @@
-putStr :: Int -> Int -> Int -> String
-putStr a b c = show (a + b + c)
+starLine n = (take n (cycle "*")) ++ "\n"
+multiLine n s = take (n * (length s)) (cycle s)
+steps a b c = starLine b
