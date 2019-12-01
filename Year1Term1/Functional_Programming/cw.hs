@@ -1,5 +1,10 @@
 starLine n = (take n (cycle "*")) ++ "\n"
-multiLine n s = take (n * (length s)) (cycle s)
-steps a b c = starLine b
 
-main = do putStr (multiLine 4 (starLine 6))
+multiLine :: Int -> String -> String
+multiLine n s = take (n * (length s)) (cycle s)
+
+steps :: Int -> Int -> Int -> String
+steps _ _ 0 = ""
+steps a b c = (steps a b (c - 1)) ++ multiLine a (starLine (b * c))
+
+main = do putStr (steps 7 2 3)
