@@ -8,7 +8,7 @@ steps :: Int -> Int -> Int -> String
 steps _ _ 0 = ""
 steps a b c = (steps a b (c - 1)) ++ multiLine a (starLine (b * c))
 
-main = do putStr (steps 7 2 3)
-
 -- course work 2
-flagpattern a = take a (cycle "*")
+flagpattern a = take a (cycle "*") ++ "\n" ++ take a (cycle "*") ++ "\n"
+
+main = do putStr (flagpattern 4)
