@@ -10,6 +10,7 @@ steps a b c = (steps a b (c - 1)) ++ multiLine a (starLine (b * c))
 
 
 -- course work 2
+-- in case the number input is odd
 x_line_odd n a
     | a == (n + 1) `div` 2 = take (n `div` 2) (cycle " ") ++ "*" ++ take (n `div` 2) (cycle " ")
     | (a /= (n + 1) `div` 2) && n > (2 * a) = take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ") ++ "*" ++ take (abs (n - (2 * a))) (cycle " ") ++ "*" ++ take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ")
@@ -18,6 +19,7 @@ x_line_odd n a
 x_pattern_odd _ 0 = ""
 x_pattern_odd n a = "*" ++ x_line_odd n a ++ "*\n" ++ x_pattern_odd n (a - 1)
 
+-- in case the number input is even
 x_line_even n a
     | a == n `div` 2 = ""
     | (a /= (n + 1) `div` 2) && n > (2 * a) = take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ") ++ "*" ++ take (abs (n - (2 * a + 2))) (cycle " ") ++ "*" ++ take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ")
@@ -34,5 +36,13 @@ flagpattern a
 
 
 -- course work 3
+split [] d t = []
+split s d t
+    | x == d    = t : (split (drop 1 y) d t) where (x,y) = span (/= (' ')) s
+    | otherwise = x : (split (drop 1 y) d t) where (x,y) = span (/= (' ')) s
 
-main = do putStr (flagpattern 13)
+-- replace key target (x:xs)
+--     | x == key = target:replace key target (splitAt 1 xs)
+--     | otherwise = x:replace key target (splitAt 1 xs)
+
+-- main = do putStr (replace "ab" "bc" (splitAt 1 (split "ad aw ef ef")))
