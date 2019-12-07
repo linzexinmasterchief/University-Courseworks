@@ -41,8 +41,8 @@ split s d t
     | x == d    = t : (split (drop 1 y) d t) where (x,y) = span (/= (' ')) s
     | otherwise = x : (split (drop 1 y) d t) where (x,y) = span (/= (' ')) s
 
--- replace key target (x:xs)
---     | x == key = target:replace key target (splitAt 1 xs)
---     | otherwise = x:replace key target (splitAt 1 xs)
+replace key target (x:xs)
+    | x == key = target:replace key target (splitAt 1 xs)
+    | otherwise = x:replace key target (splitAt 1 xs)
 
--- main = do putStr (replace "ab" "bc" (splitAt 1 (split "ad aw ef ef")))
+main = do putStr (replace "ab" "bc" (splitAt 1 (split "ad aw ef ef")))
