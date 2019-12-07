@@ -36,13 +36,21 @@ flagpattern a
 
 
 -- course work 3
-split [] d t = []
-split s d t
-    | x == d    = t : (split (drop 1 y) d t) where (x,y) = span (/= (' ')) s
-    | otherwise = x : (split (drop 1 y) d t) where (x,y) = span (/= (' ')) s
+swapsplit :: String -> String -> String -> [String]
+swapsplit d t [] = []
+swapsplit d t s
+    | x == d    = t : swapsplit d t (drop 1 y)
+    | x /= d    = x : swapsplit d t (drop 1 y)
+    where
+        (x,y) = span (/= ' ') s
 
-replace key target (x:xs)
-    | x == key = target:replace key target (splitAt 1 xs)
-    | otherwise = x:replace key target (splitAt 1 xs)
+swapwords d t s = unwords (swapsplit d t s) ++ "\n"
 
-main = do putStr (replace "ab" "bc" (splitAt 1 (split "ad aw ef ef")))
+main = do putStr (swapwords "lamb" "buffalo" "Mary has a little lamb whose fleece")
+
+
+-- course work 4
+
+-- course work 5
+split [] d = []
+split arr d = x : split (drop 1 y) d where (x,y) = span (/= d) arr
