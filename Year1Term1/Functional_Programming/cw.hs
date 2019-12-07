@@ -51,6 +51,8 @@ main = do putStr (swapwords "lamb" "buffalo" "Mary has a little lamb whose fleec
 
 -- course work 4
 
+
+
 -- course work 5
 split [] d = []
 split arr d = x : split (drop 1 y) d where (x,y) = span (/= d) arr
