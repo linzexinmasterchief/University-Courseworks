@@ -1,0 +1,38 @@
+The following structure is needed as a final submission for your project:
+
+database.txt:
+Stores all the data (see previous section). 
+
+logfile.txt:
+Stores loan history of library books (i.e. book_id, Checkout Date, Return Date). 
+You need to populate the files with the realistic data (minimum 10 records).
+
+booksearch.py: 
+A Python module which contains functions used to allow librarian to input search terms as strings, 
+and returns the output as described in the previous section. You can either: load the contents of database.txt into a list, 
+and store this as a global variable for repeated use, or load the contents of database.txt each time a search is performed.
+
+bookcheckout.py: 
+A Python module which contains functions used to ask librarian for borrower’s member-ID and the ID of the book(s)
+they wish to withdraw. Then, after performing the validity checks and functionality described in the previous section, 
+should return a message letting the librarian know whether they have withdrawn the book successfully.
+
+bookreturn.py: 
+A Python module which contains functions used to ask the librarian for the ID of the book(s) 
+the member wishes to return and provide either an appropriate error message, or a message 
+letting them know they have returned the book(s) successfully.
+
+booklist.py: 
+A Python module which contains functions used to list the book titles (not book copies) 
+in the popularity order and appropriately visualise the list by using the Python module Matplotlib. 
+Use the records in both logfile.txt and database.txt to determine the popularity of book titles. 
+You should come up with the details of the popularity criteria.
+
+database.py: 
+A Python module which contains common functions that the book search, checkout, return and list 
+modules use to interact with the database file and logfile. 
+
+menu.py: 
+A python main program which provides the required menu options to the librarian for the program functionalities. 
+The menu may be based on Python Graphical User Interface-GUI (namely the tkinter python module). 
+In that case, the GUI must use only one window.
