@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 from bookcheckout import *
 from booklist import *
@@ -36,7 +37,7 @@ book_name_search_box = tk.Entry(main_page, textvariable = book_name, width = 35,
 def search_book_button_pressed():
     global book_name
     print(book_name.get())
-    call_book_list_window()
+    newWindow.lift()
 
 search_book_button = tk.Button(main_page, width = 8, text = "Search", font = ('Helvetica', 26), bd=0, background = "#0088ee", foreground = "white", command = search_book_button_pressed).place_configure(x = 1080, y = 350)
 
@@ -72,17 +73,34 @@ title = title_green_canvas.create_text(500, 70, text = "Library Management Syste
 # copyright
 copyright_text = title_green_canvas.create_text(1300, 120, text = "© Lin Zexin     v1.0", font = ('Helvetica', 15), fill = "white")
 
+
 book_list_frame = tk.Frame(newWindow, bg = "#ffffff")
-exit_button = tk.Button(book_list_frame, width = 8, text = "EXIT", font = ('Helvetica', 26), bd=0, background = "#ee0000", foreground = "white", command = quit).pack()
+
+book_list_canvas = tk.Canvas(book_list_frame)
+
+scrollbar = ttk.Scrollbar(newWindow, orient="vertical", command=book_list_canvas.yview)
+
+scrollable_frame = ttk.Frame(book_list_canvas)
+scrollable_frame.bind(
+    "<Configure>",
+    lambda e: book_list_canvas.configure(
+        scrollregion=book_list_canvas.bbox("all")
+    )
+)
+for i in range(50):
+    ttk.Label(scrollable_frame, text="Sample scrolling label").pack()
+book_list_canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+book_list_canvas.configure(yscrollcommand=scrollbar.set)
+
+book_list_canvas.pack(side="left", fill="both", expand=True)
+scrollbar.pack(side="right", fill="y")
+
+back_to_main_button = tk.Button(book_list_frame, width = 8, text = "Back", font = ('Helvetica', 26), bd=0, background = "#ee8800", foreground = "white", command = window.lift).pack()
 
 book_list_frame.pack(fill="y")
 
-def call_book_list_window():
-    try:
-        newWindow.lift()
-        print("lift")
-    except:
-        newWindow.Toplevel(window)
+
+
 
 
 window.mainloop()
