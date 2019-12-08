@@ -12,8 +12,7 @@ from database import *
 window = tk.Tk()
 
 # full screen window
-window.state('zoomed')
-
+window.attributes("-fullscreen", True)
 # to rename the title of the window
 window.title("Library Management System")
 
@@ -58,7 +57,7 @@ main_page.pack(fill = "both")
 # book list page
 newWindow = tk.Toplevel(window)
 # full screen window
-newWindow.state('zoomed')
+newWindow.attributes("-fullscreen", True)
 # to rename the title of the window
 newWindow.title("Library Management System")
 
