@@ -1,11 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 
-from bookcheckout import *
-from booklist import *
-from bookreturn import *
-from booksearch import *
-from database import *
+import bookcheckout as bc
+import booklist as bl
+import bookreturn as br
+import booksearch as bs
 
 # main program
 
@@ -36,7 +35,15 @@ book_name_search_box = tk.Entry(main_page, textvariable = book_name, width = 35,
 
 def search_book_button_pressed():
     global book_name
-    print(book_name.get())
+    search_results = bs.go(book_name.get())
+    scrollable_frame.unbind_all()
+    if search_results == []:
+        # show not found
+        ttk.Label(scrollable_frame, text="not found").pack()
+
+    # add search results to display frame line by line
+    for i in range(len(search_results)):
+        ttk.Label(scrollable_frame, text=str(search_results[i])).pack()
     newWindow.lift()
 
 search_book_button = tk.Button(main_page, width = 8, text = "Search", font = ('Helvetica', 26), bd=0, background = "#0088ee", foreground = "white", command = search_book_button_pressed).place_configure(x = 1080, y = 350)
@@ -87,8 +94,7 @@ scrollable_frame.bind(
         scrollregion=book_list_canvas.bbox("all")
     )
 )
-for i in range(50):
-    ttk.Label(scrollable_frame, text="Sample scrolling label").pack()
+
 book_list_canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 book_list_canvas.configure(yscrollcommand=scrollbar.set)
 

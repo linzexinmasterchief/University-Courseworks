@@ -15,7 +15,8 @@ def search_by_name(target_book_name = ""):
         # [:-1] removes the last \n character in record_arr
         record_arr = record.split(',')[:-1]
         # in record_arr, 0: book id, 1: book name, 2: author name, 3: purchase date, 4: Member id (0 if not borrowed)
-        if target_book_name == record_arr[1]:
+        # use in instead of "==" allow non-accurate search, both convert to lower case prevents capital letter problem
+        if target_book_name.lower() in record_arr[1].lower():
             # if book name found, add this line into search result array
             search_results.append(record_arr)
     return search_results
@@ -112,5 +113,4 @@ def return_book(target_book_id = ""):
     # -1 represents not found
     return -1
 
-book_list = return_book("2")
-print(book_list)
+# print(search_by_id("1"))
