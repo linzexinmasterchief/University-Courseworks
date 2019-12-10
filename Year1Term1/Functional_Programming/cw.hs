@@ -50,7 +50,14 @@ main = do putStr (swapwords "lamb" "buffalo" "Mary has a little lamb whose fleec
 
 
 -- course work 4
+remove_same_char (x:y) b
+    | filter(\a -> a == x) b = x : remove_same_char y b
+    | otherwise = []
 
+compatibility _ _ = []
+compatibility a _ = []
+compatibility _ b = []
+compatibility a b = 
 
 
 -- course work 5
