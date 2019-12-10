@@ -56,16 +56,34 @@ find_first_same_char (x:xs) c start_pos
     | x == c = start_pos
     | otherwise = find_first_same_char xs c (start_pos + 1)
 
-remove_same_char _ b = b
+remove_index :: [Char] -> Int -> Int -> [Char]
+-- remove index i from str, start at j
+remove_index [] i j = []
+remove_index str i j
+    | i == j = remove_index y i (j + 1)
+    | otherwise = x : remove_index y i (j + 1)
+    where (x:y) = str
+
+remove_same_char :: [Char] -> [Char] -> [Char]
+-- remove the chars that appears in b in the first string, and remove all spaces
+remove_same_char [] b = []
+-- if x (the first char) is in b, remove x (with "|| x == ' ', ignore spaces")
 remove_same_char (x:y) b
-    | find_first_same_char b x 0 /= -1 = remove_same_char y (drop (find_first_same_char b x 0) b)
-    | otherwise = remove_same_char y b
+    | find_first_same_char b x 0 /= -1 || x == ' ' = remove_same_char y (remove_index b (find_first_same_char b x 0) 0)
+    | otherwise = x : remove_same_char y b
 
--- compatibility _ _ = []
--- compatibility a _ = []
--- compatibility _ b = []
--- compatibility a b = []
+-- decide which piece of text should be used
+word_decide :: Int -> [Char]
+word_decide n
+    | n == 0 = " loves "
+    | n == 1 = " is physical to "
+    | n == 2 = " hates "
+    | n == 3 = " is indifferent to "
+    | otherwise = " "
 
+compatibility :: [Char] -> [Char] -> [Char]
+-- connect all pieces together
+compatibility a b = a ++ word_decide ((length (remove_same_char a b) - 1) `mod` 4) ++ b ++ " and " ++ b ++ word_decide ((length (remove_same_char b a) - 1) `mod` 4) ++ a
 
 -- course work 5
 split [] d = []
