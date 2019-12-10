@@ -50,14 +50,21 @@ main = do putStr (swapwords "lamb" "buffalo" "Mary has a little lamb whose fleec
 
 
 -- course work 4
-remove_same_char (x:y) b
-    | filter(\a -> a == x) b = x : remove_same_char y b
-    | otherwise = []
+find_first_same_char :: [Char] -> Char -> Int -> Int
+find_first_same_char [] c _ = -1
+find_first_same_char (x:xs) c start_pos 
+    | x == c = start_pos
+    | otherwise = find_first_same_char xs c (start_pos + 1)
 
-compatibility _ _ = []
-compatibility a _ = []
-compatibility _ b = []
-compatibility a b = 
+remove_same_char _ b = b
+remove_same_char (x:y) b
+    | find_first_same_char b x 0 /= -1 = remove_same_char y (drop (find_first_same_char b x 0) b)
+    | otherwise = remove_same_char y b
+
+-- compatibility _ _ = []
+-- compatibility a _ = []
+-- compatibility _ b = []
+-- compatibility a b = []
 
 
 -- course work 5
