@@ -83,6 +83,7 @@ word_decide n
 
 compatibility :: [Char] -> [Char] -> [Char]
 -- connect all pieces together
+-- use ((length (remove_same_char a b) - 1) `mod` 4) to know what is the last letter (l,p,h or i) when mapping them repeatly to text after removing same letters and spaces 
 compatibility a b = a ++ word_decide ((length (remove_same_char a b) - 1) `mod` 4) ++ b ++ " and " ++ b ++ word_decide ((length (remove_same_char b a) - 1) `mod` 4) ++ a
 
 -- course work 5
