@@ -1,5 +1,7 @@
+---------------------------------------------------- part 1 ----------------------------------------------------
 -- course work 1
--- generate a line with n "*" 
+-- generate a line with n "*"
+starLine :: Int -> String
 starLine n = (take n (cycle "*")) ++ "\n"
 
 -- generate s lines of starLine
@@ -12,9 +14,11 @@ steps _ _ 0 = ""
 steps a b c = (steps a b (c - 1)) ++ multiLine a (starLine (b * c))
 
 
+---------------------------------------------------- part 2 ----------------------------------------------------
 -- course work 2
 -- in case the number input is odd
 -- n is the width of flag, a is the line number of this line
+x_line_odd :: Int -> Int -> String
 x_line_odd n a
     | a == (n + 1) `div` 2 = take (n `div` 2) (cycle " ") ++ "*" ++ take (n `div` 2) (cycle " ")
     | (a /= (n + 1) `div` 2) && n > (2 * a) = take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ") ++ "*" ++ take (abs (n - (2 * a))) (cycle " ") ++ "*" ++ take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ")
@@ -22,11 +26,13 @@ x_line_odd n a
 
 -- generate the x pattern in the centre (don't contain flag top and bottom) when the total line amount is odd
 -- n is the width of flag, a is the line number of this line
+x_pattern_odd :: Int -> Int -> String
 x_pattern_odd _ 0 = ""
 x_pattern_odd n a = "*" ++ x_line_odd n a ++ "*\n" ++ x_pattern_odd n (a - 1)
 
 -- in case the number input is even
 -- n is the width of flag, a is the line number of this line
+x_line_even :: Int -> Int -> String
 x_line_even n a
     | a == n `div` 2 = ""
     | (a /= (n + 1) `div` 2) && n > (2 * a) = take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ") ++ "*" ++ take (abs (n - (2 * a + 2))) (cycle " ") ++ "*" ++ take ((n `div` 2) - abs(a - ((n + 1) `div` 2))) (cycle " ")
@@ -34,18 +40,22 @@ x_line_even n a
 
 -- generate the x pattern in the centre (don't contain flag top and bottom) when the total line amount is odd
 -- n is the width of flag, a is the line number of this line
-x_pattern_even _ 0 = ""
+-- manually add "**" ++ take (n - 2) (cycle " ") ++ "**\n" when a == 0 because a is less than one that the actual line amount needed
+x_pattern_even :: Int -> Int -> String
+x_pattern_even n 0 = "**" ++ take (n - 2) (cycle " ") ++ "**\n"
 x_pattern_even n a
     | a == n `div` 2 = x_pattern_even n (a - 1)
     | otherwise = "*" ++ x_line_even n a ++ "*\n" ++ x_pattern_even n (a - 1)
 
 -- decide whether the amount of lines is odd or even and adds flag top and buttom line
 -- assign (a - 2) to both n and a because the top and bottom lines are handdled by the flagpattern function already
+flagpattern :: Int -> String
 flagpattern a 
     | a `mod` 2 == 1 = take a (cycle "*") ++ "\n" ++ x_pattern_odd (a - 2) (a - 2) ++ take a (cycle "*") ++ "\n"
     | otherwise = take a (cycle "*") ++ "\n" ++ x_pattern_even (a - 2) (a - 2) ++ take a (cycle "*") ++ "\n"
 
 
+---------------------------------------------------- part 3 ----------------------------------------------------
 -- course work 3
 swapsplit :: String -> String -> String -> [String]
 -- d is the word to be replaced, t is the word used to replace d, s is the string input
@@ -57,9 +67,12 @@ swapsplit d t s
         (x,y) = span (/= ' ') s
 
 -- use unwords to convert the string array back to a single string
-swapwords d t s = unwords (swapsplit d t s) ++ "\n"
+-- d is the word to be replaced, t is the word used to replace d, s is the string input
+swapwords :: String -> String -> String -> String
+swapwords d t s = unwords (swapsplit d t s)
 
 
+---------------------------------------------------- part 4 ----------------------------------------------------
 -- course work 4
 -- takes in a string s and a char c, return the index of the first character in string that is same as char c
 find_first_same_char :: [Char] -> Char -> Int -> Int
@@ -98,11 +111,23 @@ compatibility :: [Char] -> [Char] -> [Char]
 -- use ((length (remove_same_char a b) - 1) `mod` 4) to get the last letter when mapping (l,p,h or i) repeatly
 compatibility a b = a ++ word_decide ((length (remove_same_char a b) - 1) `mod` 4) ++ b ++ " and " ++ b ++ word_decide ((length (remove_same_char b a) - 1) `mod` 4) ++ a
 
+
+---------------------------------------------------- part 5 ----------------------------------------------------
 -- course work 5
+remove_empty :: (Eq a) => [[a]] -> [[a]]
+-- remove all empty array elements in the big array
+remove_empty [] = []
+remove_empty arr
+    | x == [] = remove_empty y
+    | otherwise = x : remove_empty y
+    where (x : y) = arr
+
+-- generallized signature
+split :: (Eq a) => [a] -> a -> [[a]]
 split [] d = []
 -- arr is the array/string to be splited, d is the char/number/... that used as a separation sign to do the split
 -- for example if arr = "azabzababz" and d = "z", span (/= d) arr will separate arr from the first "z" and generate ("a","zabzababz")
 -- therefore x is "a", y is "zabzababz"
 -- drop 1 y => "abzababz"
 -- then call split again to do this recursively
-split arr d = x : split (drop 1 y) d where (x,y) = span (/= d) arr
+split arr d = remove_empty(x : split (drop 1 y) d) where (x,y) = span (/= d) arr
