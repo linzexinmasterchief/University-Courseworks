@@ -9,7 +9,10 @@ multiLine :: Int -> String -> String
 multiLine n s = take (n * (length s)) (cycle s)
 
 steps :: Int -> Int -> Int -> String
+-- the output is directly "" if any of the parameters is 0
 steps _ _ 0 = ""
+steps _ 0 _ = ""
+steps 0 _ _ = ""
 -- generate c blocks of multiline with length (b * c)
 steps a b c = (steps a b (c - 1)) ++ multiLine a (starLine (b * c))
 
@@ -57,20 +60,18 @@ flagpattern a
 
 ---------------------------------------------------- part 3 ----------------------------------------------------
 -- course work 3
-swapsplit :: String -> String -> String -> [String]
--- d is the word to be replaced, t is the word used to replace d, s is the string input
-swapsplit d t [] = []
-swapsplit d t s
-    | x == d = t : swapsplit d t (drop 1 y)
-    | x /= d = x : swapsplit d t (drop 1 y)
-    where
-        (x,y) = span (/= ' ') s
+substring :: Int -> Int -> String -> String
+-- take the substring from index start, with length subLength (including end character)
+substring start subLength text = take subLength (drop start text)
 
--- use unwords to convert the string array back to a single string
--- d is the word to be replaced, t is the word used to replace d, s is the string input
+-- scan through text, cut off a slice at each time with same length as target and match with target
+-- if they are same, replace the target with replace
 swapwords :: String -> String -> String -> String
-swapwords d t s = unwords (swapsplit d t s)
-
+swapwords _ _ [] = []
+swapwords target replace text
+    | target == substring 0 (length target) text = replace ++ swapwords target replace (drop (length target) text)
+    | otherwise = x : swapwords target replace y
+    where (x:y) = text
 
 ---------------------------------------------------- part 4 ----------------------------------------------------
 -- course work 4
