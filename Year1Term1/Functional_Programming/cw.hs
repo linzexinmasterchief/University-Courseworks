@@ -21,6 +21,7 @@ steps a b c = (steps a b (c - 1)) ++ multiLine a (starLine (b * c))
 -- course work 2
 -- in case the number input is odd
 -- n is the width of flag, a is the line number of this line
+-- the idea is to calculate the space between stars based on the line number and width
 x_line_odd :: Int -> Int -> String
 x_line_odd n a
     | a == (n + 1) `div` 2 = take (n `div` 2) (cycle " ") ++ "*" ++ take (n `div` 2) (cycle " ")
