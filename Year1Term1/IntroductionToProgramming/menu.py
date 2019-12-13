@@ -1,3 +1,7 @@
+"""
+This file contains all GUI design and control
+"""
+import random
 import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
@@ -9,6 +13,7 @@ import booklist as bl
 import bookreturn as br
 import booksearch as bs
 
+import database as db
 
 #-------------------------< program preparations />-----------------------------
 # create window instance
@@ -217,6 +222,9 @@ def create_main_page():
 #--------------------------< search result page />------------------------------
 # function used to generate the book search result diplay page
 def create_search_result_page(parent):
+    """
+    This function is used to create the search result list page
+    """
     # access three global root pages
     global main_page
     global search_result_page
@@ -326,7 +334,6 @@ def create_search_result_page(parent):
     
     # sort the result list
     display_results = bl.go(display_results)
-    print(display_results)
     
     # show how many results found
     ttk.Label(
@@ -587,7 +594,7 @@ def checkout_page_refresh():
 
 
 
-
+#-----------------------------< detail page />----------------------------------
 def create_detail_page(parent, input_record):
     """
     function used to create the page for book details
@@ -697,8 +704,20 @@ def create_detail_page(parent, input_record):
     # draw trend graph for current book
     f = open("logfile.txt", "r")
 
-    year_list = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019]
-    data_list = [1,3,4,5,2,6,8,2,7,9]
+    borrow_count_per_year = ()
+    first_borrow_year = 0
+    last_borrow_year = 0
+
+    # (borrow_count_per_year, first_borrow_year, last_borrow_year) = db.get_book_history(input_record[0].split("_")[0])
+
+    year_list = []
+    data_list = []
+    for i in range(2010, 2020):
+        year_list.append(i)
+        data_list.append(random.randint(5, 20))
+
+    # data_list = list(borrow_count_per_year)
+
     trend_graph(scrollable_frame, "Trend of " + input_record[1], year_list, data_list)
 
     # display author beteen trend graph and copy list
@@ -726,6 +745,9 @@ def create_detail_page(parent, input_record):
                     -1)
             else:
                 def detail_page_refresh():
+                    """
+                    function used to refresh the detail page
+                    """
                     # destroy current book result page
                     detail_page.destroy()
                     # recreate boo result page (refresh to show in cart button changes)

@@ -62,7 +62,7 @@
 62_0,"Haematology : rudimental, practical and clinical",F. Nour-Eldin.,8/8/2015,0,
 63_0,"Industrial electrochemical processes",edited by A.T. Kuhn.,12/8/2015,0,
 64_0,"Instrumentation in process control",E.J. Wightman.,12/8/2015,0865,
-65_0,"The statistical analysis of time series",T.W. Anderson.,19/8/2015,0,
+65_0,"The statistical analysis of time series",T.W. Anderson.,19/8/2015,1234,
 66_0,"Fibres and fabrics of today",H. Thomson.,19/8/2015,0973,
 67_0,"Indexes and indexing",R.L. Collison.,21/8/2015,0746,
 68_0,"Fine powders : preparation, properties and uses",C.R. Veale.,26/8/2015,0,

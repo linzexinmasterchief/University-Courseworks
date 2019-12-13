@@ -1,8 +1,16 @@
+"""
+This file contains functions used for modifing database.txt and logfile.txt
+"""
+from datetime import date
+
 # sign given for not borrowed book id is "0"
 in_storage_sign = "0"
     
 
 def search_by_name(target_book_name = ""):
+    """
+    this function takes in a book name and returns a list of possible matches
+    """
     # do nothing if no name given
     if target_book_name == "":
         # [] represents not found
@@ -26,6 +34,9 @@ def search_by_name(target_book_name = ""):
     return search_results
 
 def search_by_id(target_book_id = ""):
+    """
+    this function takes in a book id and returns a list of possible matches
+    """
     # do nothing if no name given
     if target_book_id == "":
         # [] represents not found
@@ -48,7 +59,11 @@ def search_by_id(target_book_id = ""):
     return search_results
 
 def modify_member_id(target_book_id = "", member_id = ""):
-
+    """
+    this function takes in a target id and a member id,
+    then it will modify the member id in database based on the mode
+    (return / checkout)
+    """
 
     # is_return is used to tell this function whether this is a return process or a checkout process
     # if input member id match in storage sign, then this is a return process
@@ -125,20 +140,57 @@ def get_book_history(general_book_id):
     borrow_count_per_year = []
     year = int(first_borrow_year) - 1
     for record in record_list:
-        
+        # record[0]: yyyy/mm/dd
         if year == int(record[0].split("/")[0]):
                 
             borrow_count_per_year[year - first_borrow_year] += 1
         else:
             year += 1
             borrow_count_per_year.append(0)
+            
     return (borrow_count_per_year, first_borrow_year, last_borrow_year)
 
 
-def log(log_text = ""):
+def checkout_log(book_id):
     """
     function used to add new log entries to the logfile
     """
-    f = open("logfile.txt", "w")
-    f.writeline(log_text)
+    f = open("logfile.txt", "r+")
+    content = f.readlines()
+    # ",," means no return date yet
+    content.append(date.today().strftime("%m/%d/%y") + ",," + book_id + ",")
+    # clear
+    f.seek(0)
+    f.truncate()
+    # write new
+    f.writelines(content)
     f.close()
+
+def return_checkout_log(book_id):
+    """
+    function used to locate borrow log entry that haven't been returned
+    take in complete id book_id (include general and special id)
+    """
+    f = open("logfile.txt", "r+")
+    content = f.readlines()
+    for i in range(len(content)):
+        # splite entry into array
+        entry = content[i].split(",")[:-1]
+        # if id match and return date is blank
+        if entry[-1] == book_id and entry[-2] == "":
+            # add return date to blank space
+            entry[-2] = date.today().strftime("%m/%d/%y")
+        # recombine entry into string and replace old string
+        content[i] = entry[0] + "," + entry[1] + "," + entry[2] + ",\n"
+    # clear
+    f.seek(0)
+    f.truncate()
+    # rewrite
+    f.writelines(content)
+    f.close()
+
+
+# test code
+if __name__ == "__main__":
+    checkout_log("12_2")
+    return_checkout_log("12_2")

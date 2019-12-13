@@ -1,0 +1,27 @@
+This is the instruction of using this library management system.
+Developed by Lin Zexin, student id: B924964
+
+This system supports books checkout and return completely based on GUI
+interface, which has been designed carefully to be as easy to use as possible.
+After the program started, the main page will be loaded and display two
+input fields. The upper one is for searching books, you can either search by
+book name or book id, the system will automatically notice the difference.
+Since the id is a special piece of string, normally looks like: "x_y", for 
+example, "123_2" represents that this book has a general id "123" and a special
+id "2". The general id represents a group of books that are all identical, just
+have many copies. Therefore the special id is for locating one particular copy.
+Together, they made up an unique id for the book.
+You will also notice that the search algorithm supports in-accurate searching,
+you can just enter a part of the book's title, and the system will automatically
+give out a list of possible options, listing in the order of popularity.
+More details about the book will also be revealed if you click on the "more"
+button of any one of the books. all the copies of this book will be displayed
+and there is also a chart showing the trend of this book, how much has it been
+borrowed within a certain amount of time.
+All the books that haven't been borrowed could be add to a cart and checkout at
+the same time. Of course, you need to enter the member id, which is a 4-digit
+number
+
+The return process is even more simpler, you only need to enter the book id in the 
+lower entry box and press confirm, if your book id is correct then the return
+process is already done. Otherwise you need to check if there is any spell error.

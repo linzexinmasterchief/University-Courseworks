@@ -1,6 +1,14 @@
+"""
+This file handles the search of books
+"""
+
 import database as db
 
 def go(target = ""):
+    """
+    This function takes in a target, then return a list of posible
+    matches
+    """
     result = []
     # first try if input is an id
     result.extend(db.search_by_id(target))
