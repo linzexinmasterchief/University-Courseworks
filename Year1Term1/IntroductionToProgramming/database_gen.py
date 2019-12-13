@@ -111,12 +111,28 @@ def generate_time(start_Y = 0, end_Y = 0, amount = 0):
     return time_array
 
 f = open("database.txt","r+")
-latest_book_id = f.readlines()[-1].split(",")[0]
 t_arr = generate_time(2015, 2019, 200)
+
+book_count = []
+for i in range(len(book_list)):
+    book_count.append(0)
+
+id_list = []
+for i in range(9999):
+    i = i + random.randint(1, 30)
+    if i < 700:
+        id_list.append("0")
+    else:
+        idn = str(i)
+        for i in range(4 - len(idn)):
+            idn = "0" + idn
+            print(idn)
+            id_list.append(idn)
+
 for i in range(len(t_arr)):
     book = book_list[i % 70]
-    print(book)
-    entry = str(int(latest_book_id) + 1 + i) + ",\"" + str(book[0]) + "\"," + str(book[1]) + "," + str(t_arr[i]) + "," + "0" + ",\n"
+    entry = str(1 + i % 70) + "_" + str(book_count[i % 70]) + ",\"" + str(book[0]) + "\"," + str(book[1]) + "," + str(t_arr[i]) + "," + id_list[random.randint(0, len(id_list))] + ",\n"
+    book_count[i % 70] = book_count[i % 70] + 1
     entry_list.append(entry)
 
 f.writelines(entry_list)

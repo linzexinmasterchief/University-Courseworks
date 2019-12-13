@@ -2,11 +2,9 @@ import database as db
 
 def go(target = ""):
     result = []
-    if target.isdigit():
-        # if the input is all numbers, then treat it as an id
-        result = db.search_by_id(target)
-    else:
-        # otherwise treat it as a book name
-        result = db.search_by_name(target)
+    # first try if input is an id
+    result.extend(db.search_by_id(target))
+    # they try if input is book name (highly unlikely to be both at once)
+    result.extend(db.search_by_name(target))
     # add log entry
     return result
