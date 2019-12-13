@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+import matplotlib.pyplot as plt
+from matplotlib import *
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import bookcheckout as bc
 import booklist as bl
@@ -320,7 +323,11 @@ def create_search_result_page(parent):
         # only when y == 0 is the original copy, others need to be deleted
         if record[0].split("_")[1] == "0":
             display_results.append(record)
-
+    
+    # sort the result list
+    display_results = bl.go(display_results)
+    print(display_results)
+    
     # show how many results found
     ttk.Label(
         scrollable_frame, 
@@ -330,13 +337,11 @@ def create_search_result_page(parent):
         width = 45
         ).pack(padx = 80, pady = 20)
 
-    
     # add search results to display frame line by line
-    for record in display_results:
+    for i in range(len(display_results)):
+        record = display_results[i]
         def book_detail_button_pressed():
-            # as explained above, record[0].split("_")[1] is the general id of
-            # this series of books
-            create_detail_page(window, record[0].split("_")[1])
+            search_result_page.destroy()
         make_record(
             scrollable_frame, 
             record, 
@@ -344,24 +349,7 @@ def create_search_result_page(parent):
             '#0088ee', 
             '#33aaee', 
             book_detail_button_pressed, 
-            0)
-        # # checkout_list stores the full details of book, same as display_results above
-        # # check if the book is available
-        # if record[-1] == "0":
-        #     if record in checkout_list:
-        #         make_record(scrollable_frame, record, "In cart", '#55aa55', '#55aa55', None, -1)
-        #     else:
-        #         # used to refresh the search result page
-        #         def search_result_page_refresh():                
-        #             scrollbar_pos = scrollbar.get()
-        #             # destroy current book result page
-        #             search_result_page.destroy()
-        #             # recreate boo result page (refresh to show in cart button changes)
-        #             create_search_result_page(window)
-        #         make_record(scrollable_frame, record, "Add to cart", '#0088ee', '#33aaee', search_result_page_refresh, 0)
-        # else:
-        #     make_record(scrollable_frame, record, "Unavailable", '#dddddd', '#dddddd', None, -1)
-
+            2)
     book_list_frame.pack()
     book_list_canvas.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
@@ -371,10 +359,10 @@ def create_search_result_page(parent):
 
 
 
-#----------------------------------------------------------< checkout page />--------------------------------------------------------------
-def create_checkout_page(parent, book_id):
+#----------------------------< checkout page />---------------------------------
+def create_checkout_page(parent):
     """
-    function used to create the page for book details
+    function used to create the checkout page
     """
     # access three global root pages
     global main_page
@@ -599,12 +587,201 @@ def checkout_page_refresh():
 
 
 
-def create_detail_page():
+
+def create_detail_page(parent, input_record):
+    """
+    function used to create the page for book details
+    """
+    # access three global root pages
+    global main_page
+    global search_result_page
+    global checkout_page
+    global detail_page
+
+    global checkout_list
+
+    detail_page = tk.Frame(parent, bg = "#eeeeee")
+    
+    # generate the big green header
+    create_library_management_system_header(detail_page)
+
+    def back_to_main_button_pressed():
+        create_main_page()
+        detail_page.destroy()
+    back_to_main_button = tk.Button(
+        detail_page, 
+        width = 8, 
+        text = "< Main", 
+        font = ('Helvetica', 26), 
+        bd=0, 
+        background = "#ee8800", 
+        foreground = "white",
+        command = back_to_main_button_pressed)
+    add_hover_effect_to_widget(
+        back_to_main_button, 
+        '#eeaa33', 
+        '#ee8800')
+    back_to_main_button.pack(
+        side = "left", 
+        anchor = "nw")
+
+    def back_to_search_list_button_pressed():
+        create_search_result_page(window)
+        detail_page.destroy()
+    back_to_search_list_button = tk.Button(
+        detail_page, 
+        width = 9, 
+        text = "< List", 
+        font = ('Helvetica', 26), 
+        bd=0, 
+        background = "#55aa55", 
+        foreground = "white", 
+        command = back_to_search_list_button_pressed)
+    add_hover_effect_to_widget(
+        back_to_search_list_button, 
+        '#55aa88', 
+        '#55aa55')
+    back_to_search_list_button.pack(
+        side = "right", 
+        anchor = "ne")
+
+    book_list_frame = book_list_frame = tk.Frame(
+        detail_page, 
+        bg = "#eeeeee")
+    book_list_canvas = tk.Canvas(
+        book_list_frame, 
+        width = 1100, 
+        height = 980, 
+        bg = "#eeeeee", 
+        highlightthickness = 0)
+    scrollbar = ttk.Scrollbar(
+        book_list_frame, 
+        orient="vertical", 
+        command=book_list_canvas.yview)
+    scrollable_frame = tk.Frame(
+        book_list_canvas, 
+        bg = "#eeeeee")
+
+    # bind the canvas scroll region to scrollable_frame
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: book_list_canvas.configure(
+            scrollregion=book_list_canvas.bbox("all")
+        )
+    )
+
+    # put the scrollable_frame into canvas
+    book_list_canvas.create_window(
+        (0, 0), 
+        window=scrollable_frame, 
+        anchor="nw")
+
+    # bind the scroll control to scrollbar
+    book_list_canvas.configure(yscrollcommand=scrollbar.set)
+    
+    # show book title
+    ttk.Label(
+        scrollable_frame, 
+        text = input_record[1], 
+        font = ('Helvetica', 30), 
+        background = "#ffffff", 
+        width = 40
+        ).pack(padx = 80, pady = 20, ipadx = 50, ipady = 10)
+
+    # book details ui
+    book_details_frame = tk.Frame(
+        scrollable_frame, 
+        background = "#ffffff")
+
+    # more info about the book
+    # draw trend graph for current book
+    f = open("logfile.txt", "r")
+
+    year_list = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019]
+    data_list = [1,3,4,5,2,6,8,2,7,9]
+    trend_graph(scrollable_frame, "Trend of " + input_record[1], year_list, data_list)
+
+    # display author beteen trend graph and copy list
+    ttk.Label(
+        scrollable_frame, 
+        text = "Author: " + input_record[2], 
+        font = ('Helvetica', 20), 
+        background = "#ffffff"
+        ).pack(pady = 20)
+    
+    # search for copies with the same name and display
+    copy_search_result = bs.go(input_record[1])
+    for copy in copy_search_result:
+        # checkout_list stores the full details of book, same as display_results above
+        # check if the book is available
+        if copy[-1] == "0":
+            if copy in checkout_list:
+                make_record(
+                    scrollable_frame, 
+                    copy, 
+                    "In cart", 
+                    '#55aa55', 
+                    '#55aa55', 
+                    None, 
+                    -1)
+            else:
+                def detail_page_refresh():
+                    # destroy current book result page
+                    detail_page.destroy()
+                    # recreate boo result page (refresh to show in cart button changes)
+                    create_detail_page(window, input_record)
+                make_record(
+                    scrollable_frame, 
+                    copy, 
+                    "Add to cart", 
+                    '#0088ee', 
+                    '#33aaee', 
+                    detail_page_refresh, 
+                    0)
+        else:
+            make_record(
+                scrollable_frame, 
+                copy, 
+                "Unavailable", 
+                '#dddddd', 
+                '#dddddd', 
+                None, 
+                -1)
+
+    # other book informations
+    book_info = tk.Label(
+        book_details_frame, 
+        textvariable = "message_var", 
+        font = ('Helvetica', 20), 
+        background = "#ffffff")
+    book_info.pack(
+        side = "left", 
+        pady = 20, 
+        padx = 200, 
+        anchor = "w")
+
+    book_list_frame.pack()
+    book_list_canvas.pack(
+        side="left", 
+        fill="both",
+        expand=True)
+    scrollbar.pack(
+        side="right", 
+        fill="y")
+
+    book_details_frame.pack(fill="x")
+
+    detail_page.pack(fill = "both")
+
+
 
 
 
 #--------------------------< general functions />-------------------------------
 def create_library_management_system_header(parent):
+    """
+    function used to create the big green header
+    """
     # green background containing title and copyright
     title_green_canvas = tk.Canvas(
         parent, 
@@ -630,6 +807,21 @@ def create_library_management_system_header(parent):
         fill = "x", 
         side = "top")
 
+def trend_graph(parent, title, year_list, data_list):
+    """
+    function used to create the trend graph on book detail page
+    """
+    figure = plt.Figure(figsize=(10,5), dpi = 100)
+    ax = figure.add_subplot(111)
+    chart_type = FigureCanvasTkAgg(figure, parent)
+    chart_type.get_tk_widget().pack(fill = "x")
+    
+    ax.plot(
+        year_list, 
+        data_list, 
+        color = 'lightblue', 
+        linewidth = 3)
+    ax.set_title(title)
 
 def member_id_validation(input_id):
     """
@@ -674,10 +866,14 @@ def make_record(
         anchor = "w"
         ).pack(fill = "x", pady = 20, ipady = 10, padx = 50)
     # book details
+    # when display in the search result page, do not show id and purchase date
+    if mode == 2:
+        book_detail_text = "Author: " + str(record[2])
+    else:
+        book_detail_text = "ID: " + str(record[0]) + " > " + "Author: " + str(record[2]) + " > " + "Purchase date: " + str(record[3])
     tk.Label(
         record_frame, 
-        text = "ID: " + str(record[0]) + " > " + "Author: " + str(record[2]) 
-        + " > " + "Purchase date: " + str(record[3]), 
+        text = book_detail_text, 
         bg = "#ffffff", anchor = "w", justify = tk.LEFT
         ).pack(side = "left", padx = 50)
     # pkaceholder used to aviud the add to cart button being pushed out from the frame
@@ -697,6 +893,8 @@ def make_record(
         elif mode == 1:
             # when the mode is set to 1 (remove from checkout list mode)
             checkout_list.remove(record)
+        elif mode == 2:
+            create_detail_page(window, record)
         else:
             # otherwise means the button does nothing
             pass

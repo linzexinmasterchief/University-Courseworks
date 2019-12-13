@@ -10,7 +10,7 @@ def go(checkout_list = [], member_id = "0"):
         # check if this checkout is succeed
         if result != 0:
             # add log entry
-            
+            db.log("")
             # stop checkout process and report back (highly unlikely)
             return result
         else:

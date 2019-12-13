@@ -48,6 +48,8 @@ def search_by_id(target_book_id = ""):
     return search_results
 
 def modify_member_id(target_book_id = "", member_id = ""):
+
+
     # is_return is used to tell this function whether this is a return process or a checkout process
     # if input member id match in storage sign, then this is a return process
     # otherwise it is a checkout process
@@ -91,3 +93,52 @@ def modify_member_id(target_book_id = "", member_id = ""):
     f.close()
     # 2 represents not found
     return 2
+
+
+def get_book_history(general_book_id):
+    """
+    this function takes in a general book id (x when id is x_y, shared by
+    the same series of books) and return a list [[borrow_count_per_year], 
+    first_borrow_date, last_borrow_date]
+    """
+    f = open("logfile.txt", 'r')
+    
+    history = f.readlines()
+    record_list = []
+    for record in history:
+        # in logfile.txt, the second last part of the record is book id
+        # (last is \n)
+        record_arr = record.split(",")[:-1]
+        if record_arr[-1].split("_")[0] == general_book_id:
+            record_list.append(record_arr)
+
+    if len(record_list) == 0:
+        # not found
+        return 1
+    # sort by the first element, which is borrow time
+    record_list.sort()
+    
+    # so the first borrow time is the time of first element
+    # same as the last borrow time
+    first_borrow_year = int(record_list[0][0].split("/")[0])
+    last_borrow_year = int(record_list[-1][0].split("/")[0])
+    borrow_count_per_year = []
+    year = int(first_borrow_year) - 1
+    for record in record_list:
+        
+        if year == int(record[0].split("/")[0]):
+                
+            borrow_count_per_year[year - first_borrow_year] += 1
+        else:
+            year += 1
+            borrow_count_per_year.append(0)
+    return (borrow_count_per_year, first_borrow_year, last_borrow_year)
+
+
+def log(log_text = ""):
+    """
+    function used to add new log entries to the logfile
+    """
+    f = open("logfile.txt", "w")
+    f.writeline(log_text)
+    f.close()
