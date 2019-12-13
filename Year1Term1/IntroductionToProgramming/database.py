@@ -1,5 +1,6 @@
 # sign given for not borrowed book id is "0"
 in_storage_sign = "0"
+    
 
 def search_by_name(target_book_name = ""):
     # do nothing if no name given
